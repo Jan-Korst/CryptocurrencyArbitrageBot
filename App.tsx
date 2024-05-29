@@ -11,23 +11,40 @@ const App: React.FC = () => {
   const [opportunities, setOpportunities] = useState<ArbitrageOpportunity[]>([]);
   const [exchanges, setExchanges] = useState<string[]>([]);
   const [newExchange, setNewExchange] = useState<string>('');
+  const [refreshInterval, setRefreshInterval] = useState<number>(30000); // Refresh every 30 seconds
 
   const fetchArbitrageOpportunities = async () => {
     const mockData: ArbitrageOpportunity[] = [
       { id: '1', exchange: 'Binance', currencyPair: 'BTC/USD', priceDifference: '2%' },
       { id: '2', exchange: 'Coinbase', currencyPair: 'ETH/USD', priceDifference: '1.5%' },
     ];
-    setOpportunities(mockData);
+    const newData = mockData.map(opportunity => ({
+      ...opportunity,
+      priceDifference: (parseFloat(opportunity.priceDifference.replace('%', '')) + Math.random() * 0.5).toFixed(2) + '%',
+    }));
+    setOpportunities(newData);
   };
 
   useEffect(() => {
     fetchArbitrageOpportunities();
-  }, []);
+    const interval = setInterval(() => {
+      fetchArbitrageOpportunities();
+    }, refreshInterval);
+
+    return () => clearInterval(interval); // Cleanup interval on component unmount
+  }, [refreshInterval]);
 
   const handleAddExchange = () => {
     if (newExchange) {
       setExchanges([...exchanges, newExchange]);
       setNewExchange('');
+    }
+  };
+
+  const handleRefreshIntervalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const interval = parseInt(e.target.value, 10);
+    if (!isNaN(interval) && interval > 0) {
+      setRefreshInterval(interval * 1000); // Convert to milliseconds
     }
   };
 
@@ -43,6 +60,10 @@ const App: React.FC = () => {
             </li>
           ))}
         </ul>
+        <div>
+          <label>Refresh Interval (Seconds): </label>
+          <input type="number" value={refreshInterval / 1000} onChange={handleRefreshIntervalChange} />
+        </div>
       </div>
       <div>
         <h2>Add Exchange</h2>
