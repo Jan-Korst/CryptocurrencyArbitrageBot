@@ -35,10 +35,14 @@ const App: React.FC = () => {
   }, [refreshInterval]);
 
   const handleAddExchange = () => {
-    if (newExchange) {
+    if (newExchange && !exchanges.includes(newExchange)) {
       setExchanges([...exchanges, newExchange]);
       setNewExchange('');
     }
+  };
+
+  const handleRemoveExchange = (exchangeToRemove: string) => {
+    setExchanges(exchanges.filter(exchange => exchange !== exchangeToRemove));
   };
 
   const handleRefreshIntervalChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,8 +65,8 @@ const App: React.FC = () => {
           ))}
         </ul>
         <div>
-          <label>Refresh Interval (Seconds): </label>
-          <input type="number" value={refreshInterval / 1000} onChange={handleRefreshIntervalChange} />
+          <label>Refresh Interval (Seconds):</label>
+          <input type="number" value={refreshInterval / 1000} onChange={handleRefreshInterval_change} />
         </div>
       </div>
       <div>
@@ -79,7 +83,7 @@ const App: React.FC = () => {
         <h3>Monitored Exchanges</h3>
         <ul>
           {exchanges.map((exchange, index) => (
-            <li key={index}>{exchange}</li>
+            <li key={index}>{exchange} <button onClick={() => handleRemoveExchange(exchange)}>Remove</button></li>
           ))}
         </ul>
       </div>
