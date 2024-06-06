@@ -1,27 +1,27 @@
 import React from 'react';
 
 interface ArbitrageOpportunity {
-  exchangeNames: string;
-  cryptoAsset: string;
-  priceGap: string;
-  estimatedProfit: string;
+  exchanges: string;
+  asset: string;
+  priceDifference: string;
+  potentialProfit: string;
 }
 
-interface ArbitrageOpportunitiesListProps {
-  opportunitiesList: ArbitrageOpportunity[];
+interface ArbitrageOpportunitiesProps {
+  opportunities: ArbitrageOpportunity[];
 }
 
-const ArbitrageOpportunitiesList: React.FC<ArbitrageOpportunitiesListProps> = ({ opportunitiesList }) => {
+const ArbitrageOpportunities: React.FC<ArbitrageOpportunitiesProps> = ({ opportunities }) => {
   return (
     <ul>
-      {opportunitiesList.map((opportunity, index) => (
+      {opportunities.map((opportunity, index) => (
         <li key={index}>
-          Exchanges: {opportunity.exchangeNames}, Crypto Asset: {opportunity.cryptoAsset}, 
-          Price Gap: {opportunity.priceGap}, Estimated Profit: {opportunity.estimatedProfit}
+          Exchanges: {opportunity.exchanges}, Crypto Asset: {opportunity.asset}, 
+          Price Difference: {opportunity.priceDifference}, Potential Profit: {opportunity.potentialProfit}
         </li>
       ))}
     </ul>
   );
 };
 
-export default ArbitrageOpportunitiesList;
+export default ArbitrageOpportunities;
