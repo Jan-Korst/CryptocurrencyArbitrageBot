@@ -1,49 +1,53 @@
 import React, { FormEvent, useState } from 'react';
 
-interface AddExchangeProps {
-  onAddExchange: (exchange: { name: string; apiKey: string; secret: string }) => void;
+interface ExchangeFormData {
+  onSubmitExchange: (exchangeDetails: { name: string; apiKey: string; secretKey: string }) => void;
 }
 
-const AddExchange: React.FC<AddExchangeProps> = ({ onAddExchange }) => {
-  const [name, setName] = useState('');
-  const [apiKey, setApiKey] = useState('');
-  const [secret, setSecret] = useState('');
+const AddExchangeForm: React.FC<ExchangeFormData> = ({ onSubmitExchange }) => {
+  const [exchangeName, setExchangeName] = useState('');
+  const [exchangeApiKey, setExchangeApiKey] = useState('');
+  const [exchangeSecretKey, setExchangeSecretKey] = useState('');
 
-  const handleSubmit = (e: FormEvent) => {
-    e.preventDefault();
-    onAddExchange({ name, apiKey, secret });
-    setName('');
-    setApiKey('');
-    setSecret('');
+  const handleFormSubmission = (event: FormClientEvent) => {
+    event.preventDefault();
+    onSubmitExchange({ name: exchangeName, apiKey: exchangeApiKey, secretKey: exchangeSecretKey });
+    resetFormFields();
+  };
+
+  const resetFormFields = () => {
+    setExchangeName('');
+    setExchangeApiKey('');
+    setExchangeSecretKey('');
   };
 
   return (
-    <form onSubmit={handleSubmit}>
+    <form onSubmit={handleFormSubmission}>
       <div>
-        <label htmlFor="name">Exchange Name:</label>
+        <label htmlFor="exchangeName">Exchange Name:</label>
         <input
-          id="name"
+          id="exchangeName"
           type="text"
-          value={name}
-          onChange={(e) => setName(e.target.value)}
+          value={exchangeName}
+          onChange={(e) => setExchangeName(e.target.value)}
         />
       </div>
       <div>
-        <label htmlFor="apiKey">API Key:</label>
+        <label htmlFor="exchangeApiKey">API Key:</label>
         <input
-          id="apiKey"
+          id="exchangeApiKey"
           type="text"
-          value={apiKey}
-          onChange={(e) => setApiKey(e.target.value)}
+          value={exchangeApiKey}
+          onChange={(e) => setExchangeApiKey(e.target.value)}
         />
       </div>
       <div>
-        <label htmlFor="secret">Secret:</label>
+        <label htmlFor="exchangeSecretKey">Secret Key:</label>
         <input
-          id="secret"
+          id="exchangeSecretAnpKey"
           type="text"
-          value={secret}
-          onChange={(e) => setSecret(e.target. value)}
+          value={exchangeSecretKey}
+          onChange={(e) => setExchangeSecretKey(e.target.value)}
         />
       </div>
       <button type="submit">Add Exchange</button>
@@ -51,4 +55,4 @@ const AddExchange: React.FC<AddExchangeProps> = ({ onAddExchange }) => {
   );
 };
 
-export default AddExchange;
+export default AddExchangeForm;
