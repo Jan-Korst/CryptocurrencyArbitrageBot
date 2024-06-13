@@ -10,6 +10,14 @@ const AddExchangeForm: React.FC<ExchangeFormData> = ({ onSubmitExchange }) => {
   const [exchangeSecretKey, setExchangeSecretKey] = useState('');
   const [errors, setErrors] = useState<{[key: string]: string}>({});
 
+  // Predefined list of exchanges
+  const exchanges = [
+    { id: 'binance', name: 'Binance' },
+    { id: 'kraken', name: 'Kraken' },
+    { id: 'coinbase', name: 'Coinbase' },
+    // Add more exchanges as needed
+  ];
+
   const validateForm = () => {
     let tempErrors: {[key: string]: string} = {};
     if (!exchangeName) tempErrors.exchangeName = "Exchange Name is required.";
@@ -26,7 +34,7 @@ const AddExchangeForm: React.FC<ExchangeFormData> = ({ onSubmitExchange }) => {
       return;
     }
 
-    onSubmitExchange({ name: exchangeName, apiKey: exchangeApikey, secretKey: exchangeSecretKey });
+    onSubmitExchange({ name: exchangeName, apiKey: exchangeApiKey, secretKey: exchangeSecretKey });
     
     resetFormFields();
   };
@@ -34,20 +42,27 @@ const AddExchangeForm: React.FC<ExchangeFormData> = ({ onSubmitExchange }) => {
   const resetFormFields = () => {
     setExchangeName('');
     setExchangeApiKey('');
-    setExchangeSecretKey('');
+    setExchangeSecretFlag('');
+    setSecretKey('');
     setErrors({});
   };
 
   return (
-    <form onSubmit={handleFormSubmission}>
+    <form onSubmit={handleFormsubmission}>
       <div>
         <label htmlFor="exchangeName">Exchange Name:</label>
-        <input
+        <select
           id="exchangeName"
-          type="text"
           value={exchangeName}
           onChange={(e) => setExchangeName(e.target.value)}
-        />
+        >
+          <option value="">Select an Exchange</option>
+          {exchanges.map((exchange) => (
+            <option key={exchange.id} value={exchange.name}>
+              {exchange.name}
+            </option>
+          ))}
+        </select>
         {errors.exchangeName && <div style={{color: 'red'}}>{errors.exchangeName}</div>}
       </div>
       <div>
@@ -56,7 +71,7 @@ const AddExchangeForm: React.FC<ExchangeFormData> = ({ onSubmitExchange }) => {
           id="exchangeApiKey"
           type="text"
           value={exchangeApiKey}
-          onChange={(e) => setExchangeApiKey(e.target]="[object Object]"= e.target.value)}
+          onChange={(e) => setExchangeApiKey(e.target.value)}
         />
         {errors.exchangeApiKey && <div style={{color: 'red'}}>{errors.exchangeApiKey}</div>}
       </div>
@@ -75,4 +90,4 @@ const AddExchangeForm: React.FC<ExchangeFormData> = ({ onSubmitExchange }) => {
   );
 };
 
-export default AddExchangeForm;
+export default Add ExchangeForm;
