@@ -4,16 +4,23 @@ const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
 const cors = require('cors');
 const arbitrageRoutes = require('./routes/arbitrageRoutes');
-const mongoURI = process.env.MONGO_URI;
-const port = process.env.PORT || 3000;
-const app = express();
-app.use(cors());
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: true }));
-mongoose.connect(mongoURI, { useNewUrlParser: true, useUnifiedTopology: true })
-  .then(() => console.log('MongoDB Connected...'))
-  .catch(err => console.log(err));
-app.use('/api/arbitrage', arbitrageRoutes);
-app.listen(port, () => {
-  console.log(`Server running on port ${port}`);
+
+const connectionString = process.env.MONGO_URI;
+const serverPort = process.env.PORT || 3000;
+
+const server = express();
+
+server.use(cors());
+server.use(bodyParser.json());
+server.use(bodyParser.urlencoded({ extended: true }));
+
+mongoose
+  .connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true })
+  .then(() => console.log('MongoDB connection established...'))
+  .catch(err => console.error('MongoDB connection error:', err));
+
+server.use('/api/arbitrage', arbitrageRoutes);
+
+server.listen(serverPort, () => {
+  console.log(`Arbitrage Server is running on port ${serverPort}`);
 });
