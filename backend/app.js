@@ -5,51 +5,51 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const arbitrageRoutes = require('./routes/arbitrageRoutes');
 
-const connectionString = process.env.MONGO_URI;
-const serverPort = process.env.PORT || 3000;
+const mongoDBConnectionString = process.env.MONGO_URI;
+const applicationPort = process.env.PORT || 3000;
 
-const server = express();
+const arbitrageServer = express();
 
-server.use(cors());
-server.use(bodyParser.json());
-server.use(bodyParser.urlencoded({ extended: true }));
+arbitrageServer.use(cors());
+arbitrageServer.use(bodyParser.json());
+arbitrageServer.use(bodyParser.urlencoded({ extended: true }));
 
 mongoose
-  .connect(connectionString, { useNewUrlParser: true, useUnifiedTopology: true })
+  .connect(mongoDBConnectionString, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() => console.log('MongoDB connection established...'))
   .catch(err => console.error('MongoDB connection error:', err));
 
-server.use('/api/arbitrage', arbitrageSessions);
+arbitrageServer.use('/api/arbitrage', arbitrageRoutes);
 
-async function checkArbitrageOpportunities() {
-  const exchange1PricePromise = fetchPriceFromExchange1();
-  const exchange2PricePromise = fetchPriceFromExchange2();
+async function identifyArbitrageOpportunities() {
+  const priceFromExchangeOnePromise = getPriceFromExchangeOne();
+  const priceFromExchangeTwoPromise = getPriceFromExchangeTwo();
 
-  const [exchange1Price, exchange2Price] = await Promise.all([exchange1PricePromise, exchange2PricePromise]);
+  const [priceFromExchangeOne, priceFromExchangeTwo] = await Promise.all([priceFromExchangeOnePromise, priceFromExchangeTwoPromise]);
   
-  if (exchange1Price.BTC > exchange2Price.BTC) {
-    console.log(`Arbitrage opportunity: Buy on Exchange 2 at ${exchange2Price.BTC} and sell on Exchange 1 at ${exchange1Price.BTC}`);
-  } else if (exchange1Price.BTC < exchange2Price.BTC) {
-    console.log(`Arbitrage opportunity: Buy on Exchange 1 at ${exchange1Price.BTC} and sell on Exchange 2 at ${exchange2Price.BTC}`);
+  if (priceFromExchangeOne.BTC > priceFromExchangeTwo.BTC) {
+    console.log(`Arbitrage opportunity: Buy on Exchange 2 at ${priceFromExchangeTwo.BTC} and sell on Exchange 1 at ${priceFromExchangeOne.BTC}`);
+  } else if (priceFromExchangeOne.BTC < priceFromExchangeTwo.BTC) {
+    console.log(`Arbitrage opportunity: Buy on Exchange 1 at ${priceFromExchangeOne.BTC} and sell on Exchange 2 at ${priceFromExchangeTwo.BTC}`);
   } else {
     console.log('No arbitrage opportunity found.');
   }
 }
 
-async function fetchPriceFromExchange1() {
+async function getPriceFromExchangeOne() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ BTC: 19000 }), 1000);
+    setTimeout(() => resolve({ BTC: 19000 }), 1000); // Simulated fetch price
   });
 }
 
-async function fetchPriceFromExchange2() {
+async function getPriceFromExchangeTwo() {
   return new Promise((resolve) => {
-    setTimeout(() => resolve({ BTC: 19100 }), 1000);
+    setTimeout(() => resolve({ BTC: 19100 }), 1000); // Simulated fetch price
   });
 }
 
-server.listen(serverPort, () => {
-  console.log(`Arbitrage Server is running on port ${serverPort}`);
+arbitrageServer.listen(applicationPort, () => {
+  console.log(`Arbitrage Server is running on port ${applicationPort}`);
 });
 
-server.use('/api/arbitrage', arbitrageRoutes);
+arbitrageServer.use('/api/arbitrage', arbitrageRoutes);
