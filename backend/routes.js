@@ -4,7 +4,12 @@ const dotenv = require('dotenv').config();
 const app = express();
 app.use(express.json());
 
+function logOutput(message) {
+    console.log(`[${new Date().toISOString()}]: ${message}`);
+}
+
 app.get('/health-check', (req, res) => {
+    logOutput('Health check initiated');
     res.status(200).send({ status: 'UP' });
 });
 
@@ -26,21 +31,18 @@ app.get('/potential-arbitrage', (req, res) => {
 const PORT = process.env.PORT || 3000;
 
 app.listen(PORT, () => {
-    console.log(`Server operational on port ${PORT}`);
+    logOutput(`Server operational on port ${PORT}`);
 });
 
 function activateArbitrageProcess() {
-    console.log('Activating the arbitrage process...');
+    logOutput('Activating the arbitrage process...');
 }
 
 function deactivateArbitrageProcess() {
-    console.log('Deactivating the arbitrage process...');
+    logOutput('Deactivating the arbitrage process...');
 }
 
 function retrieveArbitrageOpportunities() {
-    console.log('Retrieving potential arbitrage opportunities...');
+    logOutput('Retrieving potential arbitrage opportunities...');
     return [
         { exchange: 'Exchange1', buy: 'BTC', sell: 'ETH', profit: '2%' },
-        { exchange: 'Exchange2', buy: 'ETH', sell: 'BTC', profit: '2.5%' }
-    ];
-}
